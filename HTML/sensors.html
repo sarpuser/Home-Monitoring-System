@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Home Security Dashboard</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	</head>
+	<body>
+		<h1>Home Security Dashboard</h1>
+		<h2>Please select a sensor and time frame to begin.</h2>
+		<form>
+			<!-- This is the dropdown menu for selecting which sensors to
+				display. We use -1 as the default value to indicate that no
+				option has been selected in that dropdown. -->
+			<select name="sensor" id="sensor">
+				<option value="-1">Select sensor</option>
+				<option value="1">Ultrasound</option>
+				<option value="2">Infrared</option>
+			</select>
+			<!-- This is the dropdown for choosing the time frame for
+				displaying results. The values in this dropdown menu are given
+				in minutes. We convert this to seconds in app.py and use epoch
+				seconds to display the corresponding database entries. -->
+			<select name="time-frame" id="time-frame">
+				<option value="-1">Time Frame</option>
+				<option value="5">Last 5 minutes</option>
+				<option value="10">Last 10 minutes</option>
+				<option value="15">Last 15 minutes</option>
+				<option value="30">Last 30 minutes</option>
+				<option value="60">Last hour</option>
+				<option value="180">Last 3 hours</option>
+				<option value="360">Last 6 hours</option>
+				<option value="720">Last 12 hours</option>
+				<option value="1440">Last 24 hours</option>
+			</select>
+			<!-- This button is used to submit the query to the server and get
+				the sensor data. -->
+			<button type="button" onclick="get_data()">Get Sensor Data</button>
+			<!-- This button is used to return to the user selection screen -->
+			<button type="button" onclick="logout()">Logout</button>
+		</form>
+		<div><br></div>  <!-- line break -->
+		<!-- This button is used to activate the emergency alarm and return to
+			the user selection screen. In this case the emergency alarm is
+			buzzer that beeps 10 times. -->
+		<div><button type="button" onclick="emergency()">EMERGENCY!!</button></div>
+		<table>
+			<thead>
+				<tr>
+					<!-- Since we have an option to display only one of the
+						sensors, we need to dynamically display the table
+						headers. The 'headers' list is provided in the JSON
+						that gets passed on to jinja in app.py. -->
+					{% for header in headers %}
+					<th>{{ header }}</th>
+					{% endfor %}
+				</tr>
+			</thead>
+			<tbody>
+				<!-- This is where we actually display the records. Jinja
+					iterates through all the entries returned by the MySQL
+					query and then iterates through each of the data points,
+					printing them on the screen. -->
+				{% for record in records %}
+				<tr>
+					{% for data in record %}
+					<td>{{ data }}</td>
+					{% endfor %}
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<!-- Connecting sensors.js file -->
+		<script type="text/javascript" src="/sensors.js"></script>
+	</body>
+</html>
